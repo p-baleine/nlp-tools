@@ -1,0 +1,11 @@
+#!/bin/bash
+
+DIR=$(cd $(dirname $0); pwd)
+TEXT=$1
+shift
+COMMAND="analyze '${TEXT}' $@"
+
+docker-compose \
+  -f ${DIR}/../japanese/docker-compose.yml \
+  run --rm mecab sh --login \
+  -c "${COMMAND}"
