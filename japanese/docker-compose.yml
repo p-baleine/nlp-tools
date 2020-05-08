@@ -2,3 +2,5 @@ version: '3'
 services:
   mecab:
     build: ./mecab
+  juman_knp:
+    build: ./juman+knp

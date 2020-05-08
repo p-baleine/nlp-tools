@@ -2,9 +2,9 @@
 
 DIR=$(cd $(dirname $0); pwd)
 TEXT=$(cat)
-COMMAND="echo '${TEXT}' | mecab $@"
+COMMAND="echo '${TEXT}' | juman $@"
 
 docker-compose \
   -f ${DIR}/../japanese/docker-compose.yml \
-  run --rm mecab sh --login \
+  run --rm juman_knp sh --login \
   -c "${COMMAND}"

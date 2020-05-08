@@ -1,5 +1,0 @@
-#!/bin/sh
-
-TEXT=$1
-shift
-echo $TEXT | mecab $@

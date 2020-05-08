@@ -8,7 +8,10 @@ A Collection of Natural Language Processing Tools.
 
 * Install
 #+begin_src bash
-$ git clone https://github.com/p-baleine/nlp-tools.git
+$ git clone https://github.com/p-baleine/personal-nlp-tools.git
+$ cd personal-nlp-tools/japanese
+$ docker-compose up
+
 $ echo 'export PATH=${PATH}:/path/to/this/repository/scripts'
 #+end_src
 
@@ -16,16 +19,45 @@ $ echo 'export PATH=${PATH}:/path/to/this/repository/scripts'
 ** [[https://taku910.github.io/mecab/][MeCab]]
 *** Usage
 #+begin_src bash
-$ nlp-tools mecab すもももももももものうち
-すもも  名詞,一般,*,*,*,*,すもも,スモモ,スモモ
-も      助詞,係助詞,*,*,*,*,も,モ,モ
-もも    名詞,一般,*,*,*,*,もも,モモ,モモ
-も      助詞,係助詞,*,*,*,*,も,モ,モ
-もも    名詞,一般,*,*,*,*,もも,モモ,モモ
-の      助詞,連体化,*,*,*,*,の,ノ,ノ
-うち    名詞,非自立,副詞可能,*,*,*,うち,ウチ,ウチ
+$ echo "麻生太郎はコーヒーを買って飲んだ。" | nlp-tools mecab
+麻生    名詞,固有名詞,人名,姓,*,*,麻生,アソウ,アソー
+太郎    名詞,固有名詞,人名,名,*,*,太郎,タロウ,タロー
+は      助詞,係助詞,*,*,*,*,は,ハ,ワ
+コーヒー        名詞,一般,*,*,*,*,コーヒー,コーヒー,コーヒー
+を      助詞,格助詞,一般,*,*,*,を,ヲ,ヲ
+買っ    動詞,自立,*,*,五段・ワ行促音便,連用タ接続,買う,カッ,カッ
+て      助詞,接続助詞,*,*,*,*,て,テ,テ
+飲ん    動詞,自立,*,*,五段・マ行,連用タ接続,飲む,ノン,ノン
+だ      助動詞,*,*,*,特殊・タ,基本形,だ,ダ,ダ
+。      記号,句点,*,*,*,*,。,。,。
 EOS
+#+end_src
 
-$ nlp-tools mecab すもももももももものうち -O wakati
-すもも も もも も もも の うち
+** [[http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN][JUMAN]]
+*** Usage
+#+begin_src bash
+$ echo "麻生太郎はコーヒーを買って飲んだ。" | nlp-tools juman
+麻生 あそう 麻生 名詞 6 人名 5 * 0 * 0 "人名:日本:姓:135:0.00166"
+@ 麻生 あさお 麻生 名詞 6 地名 4 * 0 * 0 "代表表記:麻生/あさお 地名:日本:神奈川県:区"
+太郎 たろう 太郎 名詞 6 人名 5 * 0 * 0 "人名:日本:名:45:0.00106"
+は は は 助詞 9 副助詞 2 * 0 * 0 NIL
+コーヒー こーひー コーヒー 名詞 6 普通名詞 1 * 0 * 0 "代表表記:珈琲/こーひー カテゴリ:人工物-食べ物 ドメイン:料理・食事"
+を を を 助詞 9 格助詞 1 * 0 * 0 NIL
+買って かって 買う 動詞 2 * 0 子音動詞ワ行 12 タ系連用テ形 14 "代表表記:買う/かう ドメイン:家庭・暮らし;ビジネス 反義:動詞:売る/うる"
+飲んだ のんだ 飲む 動詞 2 * 0 子音動詞マ行 9 タ形 10 "代表表記:飲む/のむ ドメイン:料理・食事"
+。 。 。 特殊 1 句点 1 * 0 * 0 NIL
+EOS
+#+end_src
+
+** JUMAN + [[http://nlp.ist.i.kyoto-u.ac.jp/?KNP][KNP]]
+*** Usage
+#+begin_src bash
+$ echo "麻生太郎はコーヒーを買って飲んだ。" | nlp-tools juman | nlp-tools knp -anaphora
+# S-ID:1 KNP:4.20-CF1.1 DATE:2020/05/08 SCORE:-16.31767
+麻生─────┐　　　　　<体言><EID:0>
+      太郎は─────┐　<体言><NE:PERSON:麻生太郎><Wikipediaエントリ:麻生太郎><EID:1>
+  コーヒーを─────┤　<体言><EID:2>
+      買って─────┤　<用言:動><EID:3><項構造:ガ/麻生太郎/1;ヲ/コーヒー/2>
+            飲んだ。<用言:動><EID:4><項構造:ガ/麻生太郎/1;ヲ/コーヒー/2>
+EOS
 #+end_src

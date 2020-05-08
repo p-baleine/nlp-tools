@@ -23,8 +23,3 @@ RUN apk add --no-cache make gcc g++ \
   && make install \
 # for helper scripts
   && mkdir mecab-scripts
-
-COPY scripts/analyze /opt/mecab-scripts/analyze
-
-RUN chmod +x /opt/mecab-scripts/analyze \
-  && echo 'PATH=${PATH}:/opt/mecab-scripts' > /etc/profile.d/mecab.sh
